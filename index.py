@@ -58,3 +58,17 @@ def buscar_noticias(noticias,palavra):
             print(f"Palavras-chave: {noticia['palavras_chave']}\n")
 
 
+#Coleta notícias
+noticias_coletadas = coletar_noticias()
+
+#Salva no CSV
+salvar_csv(noticias_coletadas)
+
+#Permite busca por palavra-chave
+while True:
+    palavra_chave = input("\nDigite uma palavra-chave para buscar (ou 'sair' para finalizar): ").strip()
+
+    if palavra_chave.lower() == "sair":
+        break
+
+    buscar_noticias(noticias_coletadas,palavra_chave)
