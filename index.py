@@ -10,18 +10,28 @@ def coletar_noticias():
 
     if resposta.status_code != 200:
         print("Erro ao acessar o site!")
-        return
+        return []
     
     sopa = BeautifulSoup(resposta.text, "html.parser")
 
-    #Seleciona as manchetes principais
-    noticias = sopa.find_all("a",class_="feed-post-link")
+    noticias = []
 
-    for i, noticia in enumerate(noticias[:10],start=1):
+    #Seleciona as manchetes principais
+    elementos = sopa.find_all("a", class_="feed-post-link")
+
+    for noticia in elementos[:20]: #Coletamos até 20 manchetes
         titulo = noticia.get_text(strip=True)
         link = noticia["href"]
-        print(f"{i}.{titulo}")
-        print(f"{link}\n")
 
-#Executar o scraper
-coletar_noticias()
+        #Tenta extrair palavras-chave (se disponíveis)
+        palavras_chave = noticia.find_parent().get("data-track-keywords","N/A")
+
+        noticias.append(
+            {
+                "titulo": titulo,
+                "link" : link,
+                "palavras_chave" : palavras_chave
+            }
+        )
+
+    return noticias
