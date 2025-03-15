@@ -1,0 +1,117 @@
+import requests
+from bs4 import BeatifulSoup
+import csv
+
+requests - permite fazer requisições HTTP para acessar páginas da web
+BeatifulSoup - facilita a extração de informações do HTML da página
+csv - permite salvar os dados extraídos em arquivo csv
+
+URL = "https://g1.globo.com/"
+
+-define a URL do site G1, onde as notícias serão coletadas
+
+def coletar_noticias():
+    '''Coleta títulos e links das notícias do G1'''
+    resposta = requests.get(URL)
+
+-faz uma requisição HTTP para acessar a página do G1
+
+if resposta.status_code != 200:
+    print("Erro ao acessar o site!")
+    return []
+
+-verifica se a requisição foi bem-sucedida (código 200)
+-se houver erro, exibe uma mensagem e retorna uma lista vazia
+
+sopa = BeautifulSoup(resposta.text, "html.parser")
+
+-converte o conteúdo da página em um objeto BeatifulSoup para facilitar a análise do HTML
+
+noticias = []
+
+-cria uma lista vazia para armazenar as notícias coletadas
+
+elementos = sopa.find_all("a", class_="feed-post-link")
+
+-busca todas as tags <a> (links) que possuem a classe "feed-post-link", onde as manchetes estão.
+
+for noticia in elementos[:20]: # Coletamos até 20 manchetes
+    titulo = noticia.get_text(strip=True)
+    link = noticia["href"]
+
+-itera sobre os 20 primeiros elementos encontrados
+-extrai o título da notícia e captura o link
+
+palavras_chave = noticia.find_parent().get("data-track-keywords", "N/A")
+
+-tenta encontrar palavras-chave associadas à notícia
+-se não houver palavras-chave, retorna "N/A"
+
+noticias.append({
+    "titulo": titulo,
+    "link": link,
+    "palavras_chave": palavras_chave
+})
+
+-adiciona as informações coletadas a um dicinário e insere na lista noticias.
+
+return noticias
+
+-retorna a lista com as notícias extraídas
+
+def salvar_csv(noticias):
+    with open("noticias_g1.csv", "w", newline="", encoding="utf-8") as arquivo:
+        escritor = csv.DictWriter(arquivo, fieldnames=["titulo", "link", "palavras_chave"])
+        escritor.writeheader()
+        escritor.writerows(noticias)
+
+-abre (ou cria) um arquivo noticias_g1.csv no modo escrita ("w")
+-usa csv.DictWriter para escrever os dados no formato CSV
+-escreve todas as notícias no arquivo (writerows(noticias))
+
+def buscar_noticias(noticias, palavra):
+    resultados = [n for n in noticias if palavra.lower() in n["titulo"].lower() or palavra.lower() in n["palavras_chave"].lower()]
+
+-filtra as notícias verificando se a palavra aparece no título ou nas palavras-chave
+
+-a função buscar_noticias recebe:
+
+-noticias: uma lista de dicinários contendo notícias coletadas
+-palavra: um termo digitado pelo usuário para buscar nas notícias
+
+-retorna uma lista de notícias cujo título ou palavras-chave contêm a palavra buscada
+
+resultados = [n for n in noticias if palavra.lower() in n["titulo"].lower() or palavra.lower() in n["palavras_chave"].lower()]
+
+é uma compreensão de lista, que equivale a:
+
+resultados = []
+for n in noticias:
+    if palavra.lower() in n["titulo"].lower() or palavra.lower() in n["palavras_chave"].lower():
+        resultados.append(n)
+
+-percorre cada notícia na lista noticias
+-converte palavra,n["titulo"] e n["palavras_chave"] para minúsculas usando .lower()
+-garantindo que a busca não seja case sensitive
+
+-verifica se palavra está contida no título ou nas palavras-chave da notícia
+-se verdadeiro - adiciona essa notícia à lista resultados
+
+else:
+    print(f"\n Notícias encontradas para '{palavra}':\n")
+    for i, noticia in enumerate(resultados, start=1):
+        print(f"{i}. {noticia['titulo']}")
+        print(f"{noticia['link']}")
+        print(f"Palavras-chave: {noticia['palavras_chave']}\n")
+
+-se houver resultados, imprime as notícias encontradas
+
+while True:
+    palavra_chave = input("\nDigite uma palavra-chave para buscar (ou 'sair' para finalizar): ").strip()
+    if palavra_chave.lower() == "sair":
+        break
+    buscar_noticias(noticias_coletadas, palavra_chave)
+
+-loop infinito que permite ao usuário buscar notícias por palavra-chave
+-se o usuário digitar "sair", o loop termina
+-caso contrário, chama buscar_noticias() para exibir os resultados
