@@ -21,7 +21,7 @@ Uma aplicação **Full-Stack Python** robusta que transforma dados não estrutur
 🚀 **Como Usar**
 1. **Clone o repositório:**
 git clone https://github.com/mrfelipesensei/Web_Scraper
-cd Web_Scraper
+\n cd Web_Scraper
 2. **Instale as dependências:**
 pip install -r requirements.txt
 3. **Execute a aplicação:**
