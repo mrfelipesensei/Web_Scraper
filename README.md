@@ -13,10 +13,10 @@ Uma aplicação **Full-Stack Python** robusta que transforma dados não estrutur
 🛠 **Tecnologias**
 - **Linguagem:** Python 3.13
 - **Bibliotecas Principais:**
-- **BeautifulSoup4: ** Parsing e extração de dados HTML;
-- **Requests: ** Comunicação com o protocolo HTTP;
-- **Streamlit: ** Framework para criação da interface web interativa;
-- **Pandas: ** Manipulação e filtragem eficiente de estruturas de dados.
+- **BeautifulSoup4:** Parsing e extração de dados HTML;
+- **Requests:** Comunicação com o protocolo HTTP;
+- **Streamlit:** Framework para criação da interface web interativa;
+- **Pandas:** Manipulação e filtragem eficiente de estruturas de dados.
 
 🚀 **Como Usar**
 1. Instale as dependências no terminal: pip install beautifusoup4 streamlit pandas;
