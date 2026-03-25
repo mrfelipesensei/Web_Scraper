@@ -1,22 +1,27 @@
 import requests
 from bs4 import BeautifulSoup
 import csv
+import logging
+
+#Configuração básica de logs para substituir o 'print' nos erros
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
 #URL da página do G1
 URL = "https://g1.globo.com/"
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+}
 
 def coletar_noticias():
-    '''Coleta títulos e links das notícias do G1'''
-    resposta = requests.get(URL)
-
-    if resposta.status_code != 200:
-        print("Erro ao acessar o site!")
+    try:
+        resposta = requests.get(URL, headers=HEADERS, timeout=10)
+        resposta.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Erro ao acessar o G1: {e}")
         return []
-    
+
     sopa = BeautifulSoup(resposta.text, "html.parser")
-
     noticias = []
-
     #Seleciona as manchetes principais
     elementos = sopa.find_all("a", class_="feed-post-link")
 
@@ -24,29 +29,45 @@ def coletar_noticias():
         titulo = noticia.get_text(strip=True)
         link = noticia["href"]
 
-        #Tenta extrair palavras-chave (se disponíveis)
-        palavras_chave = noticia.find_parent().get("data-track-keywords","N/A")
+        #Melhoria na busca por metadados - pega o resumo da notícia se houver
+        parent = noticia.find_parent("div", class_="feed-post-body")
+        resumo = parent.find("div", class_="feed-post-body-resumo") if parent else None
+        resumo_text = resumo.get_text(strip=True) if resumo else "Sem resumo disponível"
+
 
         noticias.append(
             {
                 "titulo": titulo,
                 "link" : link,
-                "palavras_chave" : palavras_chave
+                "resumo" : resumo_text
             }
         )
 
     return noticias
 
 
-def salvar_csv(noticias):
-    with open("noticias_g1.csv","w",newline="",encoding="utf-8") as arquivo:
-        escritor = csv.DictWriter(arquivo, fieldnames=["titulo","link","palavras_chave"])
-        escritor.writeheader()
-        escritor.writerows(noticias)
+def salvar_csv(noticias, nome_arquivo="noticias_g1.csv"):
+    if not noticias:
+        return
+    
+    try:
+        keys = noticias[0].keys()
+        with open(nome_arquivo,"w",newline="",encoding="utf-8") as arquivo:
+            escritor = csv.DictWriter(arquivo, fieldnames=["titulo","link","resumo"])
+            escritor.writeheader()
+            escritor.writerows(noticias)
+        logging.info(f"Dados salvos com sucesso em {nome_arquivo}")
+    except IOError as e:
+        logging.error(f"Erro ao salvar arquivo: {e}")
+
+
 
 
 def buscar_noticias(noticias,palavra):
-    resultados = [n for n in noticias if palavra.lower() in  n["titulo"].lower() or palavra.lower() in n["palavras_chave"].lower()]
+    resultados = [
+        n for n in noticias
+        if palavra.lower() in  n["titulo"].lower() or palavra.lower() in n["resumo"].lower()
+    ]
 
     if not resultados:
         print(f"Nenhuma notíficia encontrada com '{palavra}'.")
@@ -55,7 +76,7 @@ def buscar_noticias(noticias,palavra):
         for i, noticia in enumerate(resultados,start=1):
             print(f"{i}. {noticia['titulo']}")
             print(f"{noticia['link']}")
-            print(f"Palavras-chave: {noticia['palavras_chave']}\n")
+            print(f"Resumo: {noticia['resumo']}\n")
 
 
 #Coleta notícias
