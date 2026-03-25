@@ -23,7 +23,7 @@ def coletar_noticias():
         noticias = []
         elementos = sopa.find_all("a", class_="feed-post-link")
 
-        for noticia in elementos[:20]: #Coletamos até 20 manchetes
+        for noticia in elementos[:50]: #Aumentado para 50 para expandir a cobertura
             titulo = noticia.get_text(strip=True)
             link = noticia.get("href", "Sem link disponível")
             parent = noticia.find_parent("div", class_="feed-post-body")
@@ -60,9 +60,13 @@ if dados:
     #Barra de Busca
     busca = st.text_input("🔍 Buscar por palavra-chave nas manchetes:", "")
 
+    # adicionado na_filter para evitar erros com campos vazios
     if busca:
-        #Filta o DataFrame conforme o user digita
-        df_filtrado = df[df['titulo'].str.contains(busca, case=False) | df['resumo'].str.contains(busca, case=False)]
+        termo = busca.strip()
+        df_filtrado = df[
+            df['titulo'].str.contains(busca, case=False, na=False) | 
+            df['resumo'].str.contains(busca, case=False, na=False)
+        ]
     else:
         df_filtrado = df
     
