@@ -12,13 +12,20 @@ Uma aplicação **Full-Stack Python** robusta que transforma dados não estrutur
 
 🛠 **Tecnologias**
 - **Linguagem:** Python 3.13
-- **Bibliotecas Principais:**
-- **BeautifulSoup4:** Parsing e extração de dados HTML;
-- **Requests:** Comunicação com o protocolo HTTP;
-- **Streamlit:** Framework para criação da interface web interativa;
-- **Pandas:** Manipulação e filtragem eficiente de estruturas de dados.
+-- **Bibliotecas Principais:**
+-- **BeautifulSoup4:** Parsing e extração de dados HTML;
+-- **Requests:** Comunicação com o protocolo HTTP;
+-- **Streamlit:** Framework para criação da interface web interativa;
+-- **Pandas:** Manipulação e filtragem eficiente de estruturas de dados.
 
 🚀 **Como Usar**
-1. Instale as dependências no terminal: pip install beautifusoup4 streamlit pandas;
-2. Execute o script: streamlit run index.py;
-3. Acesse no navegador: A aplicação abrirá automaticamente em **http://localhost:8501**.
+1. **Clone o repositório:**
+git clone https://github.com/mrfelipesensei/Web_Scraper
+cd Web_Scraper
+2. **Instale as dependências:**
+pip install -r requirements.txt
+3. **Execute a aplicação:**
+streamlit run index.py
+4. Acesse no navegador: A aplicação abrirá automaticamente em **http://localhost:8501**.
+
+Desenvolvido por Felipe Oliveira - Full-Stack Development
