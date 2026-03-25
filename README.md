@@ -30,3 +30,15 @@ Uma aplicação **Full-Stack Python** robusta que transforma dados não estrutur
 ```bash
 git clone https://github.com/mrfelipesensei/Web_Scraper
 cd Web_Scraper
+```
+2. **Instale as depeências:**
+```bash
+pip install -r requirements.txt
+```
+3. **Execute a aplicação:**
+```bash
+streamlit run index.py
+```
+4. **Acesse no navegador:** A aplicação abrirá automaticamente em http://localhost:8501
+
+Desenvolvido por **Felipe Oliveira** - Full-Stack Development.
