@@ -41,4 +41,5 @@ streamlit run index.py
 ```
 4. **Acesse no navegador:** A aplicação abrirá automaticamente em http://localhost:8501
 
+---
 Desenvolvido por **Felipe Oliveira** - Full-Stack Development.
